@@ -8,6 +8,7 @@ import { IndicatorBox } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
 import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS, domainById } from '@/lib/domains';
 import { CATEGORY_COLOR, colorForScore, categorize, CATEGORY_EMOJI } from '@/lib/scoring';
 
@@ -18,6 +19,7 @@ const FacilityMap = dynamic(() => import('@/components/FacilityMap'), {
 
 export function OutbreakResponseTab() {
   const t = useT();
+  const isMobile = useIsMobile();
   const { summaries } = useDerived();
   const outbreakDomains = useStore((s) => s.outbreakDomains);
   const domainList = DOMAINS.filter((d) => outbreakDomains.includes(d.id));
@@ -69,9 +71,10 @@ export function OutbreakResponseTab() {
             },
           ]}
           layout={{
-            margin: { l: 160, r: 20, t: 10, b: 40 },
+            margin: { l: isMobile ? 92 : 160, r: isMobile ? 8 : 20, t: 10, b: 40 },
+            font: { size: isMobile ? 9 : 12 },
             xaxis: { title: { text: t('totalScore') }, range: [0, 100] },
-            yaxis: { autorange: 'reversed', automargin: true },
+            yaxis: { autorange: 'reversed', automargin: true, tickfont: { size: isMobile ? 9 : 12 } },
             shapes: [
               thresholdLine(50, '#c0392b'),
               thresholdLine(80, '#27ae60'),
@@ -126,6 +129,7 @@ function DomainHeatmap({
   summaries: ReturnType<typeof useDerived>['summaries'];
   domainIds: string[];
 }) {
+  const isMobile = useIsMobile();
   if (summaries.length === 0 || domainIds.length === 0)
     return <Empty />;
   const z = summaries.map((s) =>
@@ -142,8 +146,10 @@ function DomainHeatmap({
           z,
           x: domainIds.map((id) => domainById(id)?.label ?? id),
           y: summaries.map((s) => s.facilityName),
+          // In-cell numbers collapse into overlap on narrow screens — show the
+          // color grid only on mobile; values remain available on hover/tap.
           text: text as unknown as string[],
-          texttemplate: '%{text}',
+          texttemplate: isMobile ? undefined : '%{text}',
           textfont: { size: 9, color: 'white' },
           colorscale: [
             [0, CATEGORY_COLOR.critical],
@@ -160,9 +166,9 @@ function DomainHeatmap({
         },
       ]}
       layout={{
-        margin: { l: 160, r: 10, t: 10, b: 120 },
-        xaxis: { side: 'top', tickangle: -40, automargin: true },
-        yaxis: { autorange: 'reversed', automargin: true },
+        margin: { l: isMobile ? 92 : 160, r: 10, t: 10, b: isMobile ? 90 : 120 },
+        xaxis: { side: 'top', tickangle: -40, automargin: true, tickfont: { size: isMobile ? 8 : 11 } },
+        yaxis: { autorange: 'reversed', automargin: true, tickfont: { size: isMobile ? 8 : 11 } },
       }}
     />
   );

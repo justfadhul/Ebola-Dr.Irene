@@ -7,6 +7,7 @@ import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
 import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS } from '@/lib/domains';
 import { summaryMetrics } from '@/lib/selectors';
 import { daysBetween } from '@/lib/scoring';
@@ -99,6 +100,7 @@ function Trajectory({
   summaries: FacilitySummary[];
   timeAxis: TimeAxis;
 }) {
+  const isMobile = useIsMobile();
   if (summaries.length === 0) return <Empty />;
   const traces = summaries.map((s) => {
     const xs = s.assessments.map((a, i) => {
@@ -121,7 +123,8 @@ function Trajectory({
     <Plot
       data={traces}
       layout={{
-        margin: { l: 50, r: 20, t: 10, b: 50 },
+        margin: { l: isMobile ? 38 : 50, r: isMobile ? 8 : 20, t: 10, b: 50 },
+        font: { size: isMobile ? 10 : 12 },
         xaxis: {
           title: {
             text:
@@ -152,6 +155,7 @@ function refLine(y: number, color: string) {
 }
 
 function ChangeHeatmap({ summaries }: { summaries: FacilitySummary[] }) {
+  const isMobile = useIsMobile();
   if (summaries.length === 0) return <Empty />;
   const z = summaries.map((s) => DOMAINS.map((d) => s.domainDelta[d.id] ?? 0));
   return (
@@ -162,8 +166,10 @@ function ChangeHeatmap({ summaries }: { summaries: FacilitySummary[] }) {
           z,
           x: DOMAINS.map((d) => d.label),
           y: summaries.map((s) => s.facilityName),
+          // Per-cell deltas overlap on narrow screens — color grid only on
+          // mobile; exact values stay available on hover/tap.
           text: z.map((row) => row.map((v) => (v > 0 ? `+${v}` : `${v}`))) as unknown as string[],
-          texttemplate: '%{text}',
+          texttemplate: isMobile ? undefined : '%{text}',
           textfont: { size: 9 },
           colorscale: [
             [0, '#c0392b'],
@@ -172,14 +178,14 @@ function ChangeHeatmap({ summaries }: { summaries: FacilitySummary[] }) {
           ],
           zmin: -50,
           zmax: 50,
-          showscale: true,
+          showscale: !isMobile,
           hovertemplate: '%{y}<br>%{x}: %{z}<extra></extra>',
         },
       ]}
       layout={{
-        margin: { l: 160, r: 10, t: 10, b: 120 },
-        xaxis: { side: 'top', tickangle: -40, automargin: true },
-        yaxis: { autorange: 'reversed', automargin: true },
+        margin: { l: isMobile ? 92 : 160, r: 10, t: 10, b: isMobile ? 90 : 120 },
+        xaxis: { side: 'top', tickangle: -40, automargin: true, tickfont: { size: isMobile ? 8 : 11 } },
+        yaxis: { autorange: 'reversed', automargin: true, tickfont: { size: isMobile ? 8 : 11 } },
       }}
     />
   );
