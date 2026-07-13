@@ -55,6 +55,8 @@ const en: Dict = {
   status: 'Status',
   score: 'Score',
   lastAssessed: 'Last Assessed',
+  openMenu: 'Open menu',
+  closeMenu: 'Close menu',
 };
 
 const fr: Dict = {
@@ -107,6 +109,8 @@ const fr: Dict = {
   status: 'Statut',
   score: 'Score',
   lastAssessed: 'Dernière évaluation',
+  openMenu: 'Ouvrir le menu',
+  closeMenu: 'Fermer le menu',
 };
 
 const es: Dict = {
@@ -159,6 +163,8 @@ const es: Dict = {
   status: 'Estado',
   score: 'Puntuación',
   lastAssessed: 'Última evaluación',
+  openMenu: 'Abrir menú',
+  closeMenu: 'Cerrar menú',
 };
 
 const DICTS: Record<Language, Dict> = { en, fr, es };

@@ -10,7 +10,13 @@ import { DOMAINS, FACILITY_LEVELS } from '@/lib/domains';
 
 type Section = 'data' | 'view' | 'outbreak';
 
-export function Sidebar() {
+export function Sidebar({
+  mobileOpen = false,
+  onClose,
+}: {
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}) {
   const t = useT();
   const [open, setOpen] = useState<Record<Section, boolean>>({
     data: true,
@@ -20,11 +26,26 @@ export function Sidebar() {
   const toggle = (s: Section) => setOpen((o) => ({ ...o, [s]: !o[s] }));
 
   return (
-    <aside className="w-80 shrink-0 border-r border-slate-200 bg-white h-screen overflow-y-auto">
-      <div className="p-3 border-b border-slate-200">
+    <aside
+      className={`fixed lg:static inset-y-0 left-0 z-40 w-80 max-w-[85vw] shrink-0 border-r border-slate-200 bg-white h-screen overflow-y-auto transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        mobileOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full'
+      }`}
+    >
+      <div className="p-3 border-b border-slate-200 flex items-center justify-between gap-2">
         <div className="font-bold text-slate-800 text-sm leading-snug">
           🦠 {t('appTitle')}
         </div>
+        {/* Close button — mobile drawer only */}
+        <button
+          onClick={onClose}
+          className="lg:hidden shrink-0 p-1 rounded hover:bg-slate-100 text-slate-500"
+          aria-label={t('closeMenu')}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
       <SectionHeader
         icon="📂"

@@ -1,10 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Ebola IPC Assessment Analysis Dashboard',
   description:
     'Client-side analysis and visualization of WHO IPC Rapid Assessment Tool (RAT) results. Data never leaves your browser.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
