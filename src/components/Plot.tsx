@@ -12,7 +12,14 @@ export default function Plot(props: PlotParams) {
       {...props}
       useResizeHandler
       style={{ width: '100%', height: '100%', ...(props.style ?? {}) }}
-      config={{ displaylogo: false, responsive: true, ...(props.config ?? {}) }}
+      config={{
+        displaylogo: false,
+        responsive: true,
+        // The floating modebar overlaps chart content on small screens (and
+        // is redundant with the planned export feature) — hide it everywhere.
+        displayModeBar: false,
+        ...(props.config ?? {}),
+      }}
     />
   );
 }

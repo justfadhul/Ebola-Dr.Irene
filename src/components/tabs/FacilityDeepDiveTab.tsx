@@ -7,6 +7,7 @@ import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
 import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS } from '@/lib/domains';
 import { categorize, colorForScore, colorForDelta, daysBetween, CATEGORY_EMOJI, CATEGORY_LABEL } from '@/lib/scoring';
 
@@ -14,6 +15,7 @@ const TODAY = '2024-09-30';
 
 export function FacilityDeepDiveTab() {
   const t = useT();
+  const isMobile = useIsMobile();
   const { summaries } = useDerived();
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
   const setSelectedFacility = useStore((s) => s.setSelectedFacility);
@@ -103,9 +105,10 @@ export function FacilityDeepDiveTab() {
               },
             ]}
             layout={{
-              margin: { l: 150, r: 20, t: 10, b: 40 },
+              margin: { l: isMobile ? 108 : 150, r: isMobile ? 8 : 20, t: 10, b: 40 },
+              font: { size: isMobile ? 9 : 12 },
               xaxis: { title: { text: t('score') }, range: [0, 100] },
-              yaxis: { autorange: 'reversed', automargin: true },
+              yaxis: { autorange: 'reversed', automargin: true, tickfont: { size: isMobile ? 9 : 12 } },
               shapes: [vLine(50, '#c0392b'), vLine(80, '#27ae60')],
             }}
           />
@@ -169,6 +172,7 @@ function vLine(x: number, color: string) {
 }
 
 function DivergingChange({ facility }: { facility: ReturnType<typeof useDerived>['summaries'][number] }) {
+  const isMobile = useIsMobile();
   const rows = DOMAINS.map((d) => ({ label: d.label, delta: facility.domainDelta[d.id] ?? 0 })).sort(
     (a, b) => a.delta - b.delta,
   );
@@ -185,9 +189,10 @@ function DivergingChange({ facility }: { facility: ReturnType<typeof useDerived>
         },
       ]}
       layout={{
-        margin: { l: 150, r: 20, t: 10, b: 40 },
+        margin: { l: isMobile ? 104 : 150, r: isMobile ? 8 : 20, t: 10, b: 40 },
+        font: { size: isMobile ? 9 : 12 },
         xaxis: { title: { text: 'Δ since baseline' }, zeroline: true },
-        yaxis: { automargin: true },
+        yaxis: { automargin: true, tickfont: { size: isMobile ? 9 : 12 } },
       }}
     />
   );
