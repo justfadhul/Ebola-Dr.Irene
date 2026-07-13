@@ -119,9 +119,12 @@ a WebAssembly build (shinylive). Two viable paths:
 | **A (recommended)** | **React + TypeScript + Vite**, client-side only | Maintainable by any web dev, small bundle, first-class PWA/i18n/export, easy GitHub Pages deploy | Rebuild of analysis logic in TS |
 | B | R/Shiny via shinylive (WASM) | Reuses existing Shiny logic if source is available | Large WASM payload, R-specialist maintenance, harder i18n/PWA |
 
-**Recommended stack (Option A):**
+**Chosen stack (Option A, Next.js):**
 
-- **Framework/build:** React + TypeScript + Vite → static output for GitHub Pages.
+- **Framework/build:** **Next.js (App Router) + TypeScript**, configured with
+  `output: 'export'` for a fully static build deployable to GitHub Pages. All
+  components are client components (`'use client'`) since data stays in-browser;
+  no SSR, API routes, or server runtime are used.
 - **State/filters:** lightweight store (Zustand) holding the parsed dataset +
   filter state; all derived data computed with memoized selectors.
 - **CSV parsing:** PapaParse (streaming, handles large files in-browser).
