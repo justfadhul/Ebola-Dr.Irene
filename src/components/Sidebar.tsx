@@ -112,12 +112,12 @@ function DataSourceSection() {
         : {};
       const { rows, errors } = parseCsv(text, mapping);
       if (rows.length === 0) {
-        setStatus('⚠️ No rows parsed. Check the file/columns.');
+        setStatus(t('statusNoRows'));
         return;
       }
       loadData(rows, file.name);
       setStatus(
-        `✅ Loaded ${rows.length} assessments${errors.length ? ` (${errors.length} warnings)` : ''}.`,
+        `✅ ${rows.length} ${t('assessmentsLoaded')}${errors.length ? ` (${errors.length} ${t('warnings')})` : ''}.`,
       );
     };
     reader.readAsText(file);
@@ -170,16 +170,13 @@ function DataSourceSection() {
       )}
 
       {mode === 'kobo' && (
-        <p className="text-xs text-slate-500">
-          KoboToolbox API fetch (server URL, asset UID, token) — planned. Use CSV
-          upload or test data for now.
-        </p>
+        <p className="text-xs text-slate-500">{t('koboPlanned')}</p>
       )}
 
       <button
         onClick={() => {
           loadData(generateTestData(), 'Test Data (fabricated)');
-          setStatus('✅ Loaded fabricated test data (200 facilities).');
+          setStatus(t('testDataLoaded'));
         }}
         className="w-full bg-slate-800 text-white rounded py-2 text-sm font-medium hover:bg-slate-700"
       >
@@ -301,7 +298,7 @@ function ViewControlsSection() {
               className="w-full border border-slate-300 rounded px-2 py-1.5"
             />
             <label className="block text-xs text-slate-600">
-              ± weeks buffer: {filters.baselineBufferWeeks}
+              {t('weeksBuffer')} {filters.baselineBufferWeeks}
               <input
                 type="range"
                 min={0}
@@ -319,6 +316,7 @@ function ViewControlsSection() {
 }
 
 function OutbreakSettingsSection() {
+  const t = useT();
   const { outbreakDomains, setOutbreakDomains } = useStore();
   const toggle = (id: string) =>
     setOutbreakDomains(
@@ -328,9 +326,7 @@ function OutbreakSettingsSection() {
     );
   return (
     <div className="p-3 border-b border-slate-200 text-sm">
-      <p className="text-xs text-slate-500 mb-2">
-        Domains included in Outbreak Response analysis.
-      </p>
+      <p className="text-xs text-slate-500 mb-2">{t('outbreakDomainsHelp')}</p>
       <div className="space-y-1 max-h-64 overflow-y-auto">
         {DOMAINS.map((d) => (
           <label key={d.id} className="flex items-center gap-2">

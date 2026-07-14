@@ -7,7 +7,7 @@ import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
-import { useT } from '@/lib/i18n';
+import { useT, CATEGORY_KEY } from '@/lib/i18n';
 import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS } from '@/lib/domains';
 import { summaryMetrics } from '@/lib/selectors';
@@ -63,7 +63,7 @@ export function SummaryViewTab() {
 
       <ChartCard
         title={`📈 ${t('trajectory')}`}
-        subtitle="One line per facility; dashed reference lines at 50 and 80."
+        subtitle={t('subTrajectory')}
         height={480}
       >
         <div className="flex flex-wrap gap-4 mb-2 text-sm">
@@ -71,9 +71,9 @@ export function SummaryViewTab() {
             <span className="text-xs text-slate-500">{t('timeAxis')}:</span>
             {(
               [
-                ['reportingDate', 'Reporting Date'],
-                ['daysSinceBaseline', 'Days Since Baseline'],
-                ['assessmentNumber', 'Assessment #'],
+                ['reportingDate', t('axisReportingDate')],
+                ['daysSinceBaseline', t('axisDaysSinceBaseline')],
+                ['assessmentNumber', t('axisAssessmentNumber')],
               ] as [TimeAxis, string][]
             ).map(([v, label]) => (
               <label key={v} className="flex items-center gap-1">
@@ -83,11 +83,18 @@ export function SummaryViewTab() {
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">Trend:</span>
-            {(['all', 'increasing', 'decreasing', 'static'] as const).map((v) => (
-              <label key={v} className="flex items-center gap-1 capitalize">
+            <span className="text-xs text-slate-500">{t('trend')}:</span>
+            {(
+              [
+                ['all', t('trendAll')],
+                ['increasing', t('trendIncreasing')],
+                ['decreasing', t('trendDecreasing')],
+                ['static', t('trendStatic')],
+              ] as ['all' | TrendCategory, string][]
+            ).map(([v, label]) => (
+              <label key={v} className="flex items-center gap-1">
                 <input type="radio" checked={trend === v} onChange={() => setTrend(v)} />
-                {v}
+                {label}
               </label>
             ))}
           </div>
@@ -99,7 +106,7 @@ export function SummaryViewTab() {
 
       <ChartCard
         title={`🟥🟩 ${t('changeBaseline')}`}
-        subtitle="Facility × domain change from baseline to latest. Green = improvement, red = decline."
+        subtitle={t('subChangeBaseline')}
         height={Math.max(320, summaries.length * 20)}
       >
         <ChangeHeatmap summaries={summaries} />
@@ -120,6 +127,7 @@ function Trajectory({
   summaries: FacilitySummary[];
   timeAxis: TimeAxis;
 }) {
+  const t = useT();
   const isMobile = useIsMobile();
   if (summaries.length === 0) return <Empty />;
   const traces = summaries.map((s) => {
@@ -149,13 +157,13 @@ function Trajectory({
           title: {
             text:
               timeAxis === 'assessmentNumber'
-                ? 'Assessment #'
+                ? t('axisAssessmentNumber')
                 : timeAxis === 'daysSinceBaseline'
-                  ? 'Days Since Baseline'
-                  : 'Reporting Date',
+                  ? t('axisDaysSinceBaseline')
+                  : t('axisReportingDate'),
           },
         },
-        yaxis: { title: { text: 'Total Score' }, range: [0, 100] },
+        yaxis: { title: { text: t('totalScore') }, range: [0, 100] },
         shapes: [refLine(50, '#c0392b'), refLine(80, '#27ae60')],
       }}
     />
@@ -212,19 +220,29 @@ function ChangeHeatmap({ summaries }: { summaries: FacilitySummary[] }) {
 }
 
 function ProgressTable({ summaries }: { summaries: FacilitySummary[] }) {
+  const t = useT();
   if (summaries.length === 0) return <Empty />;
+  const headers = [
+    t('facility'),
+    t('thAssessments'),
+    t('thBaselineDate'),
+    t('thLatestDate'),
+    t('thFollowUpDays'),
+    t('thBaseline'),
+    t('thLatest'),
+    t('thDeltaTotal'),
+    t('status'),
+  ];
   return (
     <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
       <table className="w-full text-sm border-collapse">
         <thead className="sticky top-0 bg-slate-100 text-left">
           <tr>
-            {['Facility', 'Assessments', 'Baseline Date', 'Latest Date', 'Follow-up (d)', 'Baseline', 'Latest', 'Δ Total', 'Status'].map(
-              (h) => (
-                <th key={h} className="py-2 px-2 font-semibold text-slate-700">
-                  {h}
-                </th>
-              ),
-            )}
+            {headers.map((h) => (
+              <th key={h} className="py-2 px-2 font-semibold text-slate-700">
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -244,7 +262,7 @@ function ProgressTable({ summaries }: { summaries: FacilitySummary[] }) {
                 {s.deltaTotal >= 0 ? '+' : ''}
                 {s.deltaTotal}
               </td>
-              <td className="py-1.5 px-2 capitalize">{s.latestCategory}</td>
+              <td className="py-1.5 px-2">{t(CATEGORY_KEY[s.latestCategory])}</td>
             </tr>
           ))}
         </tbody>
@@ -253,8 +271,11 @@ function ProgressTable({ summaries }: { summaries: FacilitySummary[] }) {
   );
 }
 
-const Empty = () => (
-  <div className="h-full grid place-items-center text-slate-400 text-sm">
-    No facilities match the current filters.
-  </div>
-);
+const Empty = () => {
+  const t = useT();
+  return (
+    <div className="h-full grid place-items-center text-slate-400 text-sm">
+      {t('noFacilitiesMatch')}
+    </div>
+  );
+};

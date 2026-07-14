@@ -7,10 +7,10 @@ import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
-import { useT } from '@/lib/i18n';
+import { useT, CATEGORY_KEY } from '@/lib/i18n';
 import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS } from '@/lib/domains';
-import { categorize, colorForScore, colorForDelta, daysBetween, CATEGORY_EMOJI, CATEGORY_LABEL } from '@/lib/scoring';
+import { categorize, colorForScore, colorForDelta, daysBetween, CATEGORY_EMOJI } from '@/lib/scoring';
 
 const TODAY = '2024-09-30';
 
@@ -34,9 +34,7 @@ export function FacilityDeepDiveTab() {
 
   if (!facility)
     return (
-      <div className="card p-8 text-center text-slate-400">
-        No facilities match the current filters.
-      </div>
+      <div className="card p-8 text-center text-slate-400">{t('noFacilitiesMatch')}</div>
     );
 
   const idx = assessmentIdx ?? facility.assessments.length - 1;
@@ -102,14 +100,14 @@ export function FacilityDeepDiveTab() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <IndicatorBox label={`📋 ${t('assessmentsSinceBaseline')}`} value={facility.assessmentCount} gradient={GRADIENTS.blue} />
-        <IndicatorBox label="🗓️ Assessments (Last 30 Days)" value={since30} gradient={GRADIENTS.teal} />
-        <IndicatorBox label="🕐 Assessments (Last 7 Days)" value={since7} gradient={GRADIENTS.purple} />
+        <IndicatorBox label={`🗓️ ${t('assessmentsLast30')}`} value={since30} gradient={GRADIENTS.teal} />
+        <IndicatorBox label={`🕐 ${t('assessmentsLast7')}`} value={since7} gradient={GRADIENTS.purple} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4">
         <ChartCard
           title={`📊 ${t('snapshot')}`}
-          subtitle={`Assessment #${idx + 1} — ${assessment.reportingDate} · Total ${assessment.totalScore}`}
+          subtitle={`${t('assessment')} #${idx + 1} — ${assessment.reportingDate} · ${t('total')} ${assessment.totalScore}`}
           height={520}
         >
           <Plot
@@ -136,14 +134,14 @@ export function FacilityDeepDiveTab() {
         </ChartCard>
 
         <section className="card p-4 overflow-y-auto" style={{ maxHeight: 560 }}>
-          <h3 className="font-semibold text-slate-800 mb-2">Domain detail</h3>
+          <h3 className="font-semibold text-slate-800 mb-2">{t('domainDetail')}</h3>
           <table className="w-full text-sm border-collapse">
             <thead className="text-left bg-slate-100">
               <tr>
-                <th className="py-2 px-2">Domain</th>
-                <th className="py-2 px-2">Score</th>
-                <th className="py-2 px-2">Δ Baseline</th>
-                <th className="py-2 px-2">Status</th>
+                <th className="py-2 px-2">{t('thDomain')}</th>
+                <th className="py-2 px-2">{t('score')}</th>
+                <th className="py-2 px-2">{t('thDeltaBaseline')}</th>
+                <th className="py-2 px-2">{t('status')}</th>
               </tr>
             </thead>
             <tbody>
@@ -159,7 +157,7 @@ export function FacilityDeepDiveTab() {
                       {delta >= 0 ? '+' : ''}{delta}
                     </td>
                     <td className="py-1.5 px-2">
-                      {CATEGORY_EMOJI[cat]} {CATEGORY_LABEL[cat]}
+                      {CATEGORY_EMOJI[cat]} {t(CATEGORY_KEY[cat])}
                     </td>
                   </tr>
                 );
@@ -170,8 +168,8 @@ export function FacilityDeepDiveTab() {
       </div>
 
       <ChartCard
-        title={`📊 ${t('divergingChange')} (Diverging View)`}
-        subtitle="Net change per domain since baseline, sorted biggest loss (left) → biggest gain (right)."
+        title={`📊 ${t('divergingChange')} (${t('divergingView')})`}
+        subtitle={t('subDiverging')}
         height={480}
       >
         <DivergingChange facility={facility} />
@@ -193,6 +191,7 @@ function vLine(x: number, color: string) {
 }
 
 function DivergingChange({ facility }: { facility: ReturnType<typeof useDerived>['summaries'][number] }) {
+  const t = useT();
   const isMobile = useIsMobile();
   const rows = DOMAINS.map((d) => ({ label: d.label, delta: facility.domainDelta[d.id] ?? 0 })).sort(
     (a, b) => a.delta - b.delta,
@@ -212,7 +211,7 @@ function DivergingChange({ facility }: { facility: ReturnType<typeof useDerived>
       layout={{
         margin: { l: isMobile ? 104 : 150, r: isMobile ? 8 : 20, t: 10, b: 40 },
         font: { size: isMobile ? 9 : 12 },
-        xaxis: { title: { text: 'Δ since baseline' }, zeroline: true },
+        xaxis: { title: { text: t('axisDeltaSinceBaseline') }, zeroline: true },
         yaxis: { automargin: true, tickfont: { size: isMobile ? 9 : 12 } },
       }}
     />

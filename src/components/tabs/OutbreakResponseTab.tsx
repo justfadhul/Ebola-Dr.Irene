@@ -8,14 +8,19 @@ import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
-import { useT } from '@/lib/i18n';
+import { useT, CATEGORY_KEY } from '@/lib/i18n';
 import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS, domainById } from '@/lib/domains';
 import { CATEGORY_COLOR, colorForScore, categorize, CATEGORY_EMOJI } from '@/lib/scoring';
 
+const MapLoading = () => {
+  const t = useT();
+  return <div className="h-full grid place-items-center text-slate-400">{t('mapLoading')}</div>;
+};
+
 const FacilityMap = dynamic(() => import('@/components/FacilityMap'), {
   ssr: false,
-  loading: () => <div className="h-full grid place-items-center text-slate-400">Loading map…</div>,
+  loading: () => <MapLoading />,
 });
 
 export function OutbreakResponseTab() {
@@ -72,7 +77,7 @@ export function OutbreakResponseTab() {
 
       <ChartCard
         title={`🚦 ${t('readinessIndex')}`}
-        subtitle="Latest total score per facility. Lowest (highest priority) on top."
+        subtitle={t('subReadiness')}
         height={Math.max(320, ranked.length * 22)}
       >
         <Plot
@@ -101,7 +106,7 @@ export function OutbreakResponseTab() {
 
       <ChartCard
         title={`🟢🟡🔴 ${t('domainScores')}`}
-        subtitle="One row per facility, one column per domain. Cells colored by score thresholds."
+        subtitle={t('subDomainScores')}
         height={Math.max(320, summaries.length * 20)}
       >
         <DomainHeatmap
@@ -112,7 +117,7 @@ export function OutbreakResponseTab() {
 
       <ChartCard
         title={`🗺️ ${t('facilityMap')}`}
-        subtitle="Color = score category; dot size scales with score. Requires latitude/longitude."
+        subtitle={t('subFacilityMap')}
         height={480}
       >
         <FacilityMap summaries={summaries} />
@@ -195,17 +200,18 @@ function DispatchTable({
 }: {
   summaries: ReturnType<typeof useDerived>['summaries'];
 }) {
+  const t = useT();
   if (summaries.length === 0) return <Empty />;
   return (
     <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
       <table className="w-full text-sm border-collapse">
         <thead className="sticky top-0 bg-slate-100">
           <tr className="text-left">
-            <Th>Facility</Th>
-            <Th>Readiness</Th>
-            <Th>Critical-gap domains</Th>
-            <Th>Last Assessed</Th>
-            <Th>Status</Th>
+            <Th>{t('facility')}</Th>
+            <Th>{t('thReadiness')}</Th>
+            <Th>{t('thCriticalGaps')}</Th>
+            <Th>{t('lastAssessed')}</Th>
+            <Th>{t('status')}</Th>
           </tr>
         </thead>
         <tbody>
@@ -219,8 +225,7 @@ function DispatchTable({
               </td>
               <td className="py-1.5 px-2">{s.latest.reportingDate}</td>
               <td className="py-1.5 px-2">
-                {CATEGORY_EMOJI[s.latestCategory]}{' '}
-                <span className="capitalize">{categorize(s.latestTotal)}</span>
+                {CATEGORY_EMOJI[s.latestCategory]} {t(CATEGORY_KEY[s.latestCategory])}
               </td>
             </tr>
           ))}
@@ -234,8 +239,11 @@ const Th = ({ children }: { children: React.ReactNode }) => (
   <th className="py-2 px-2 font-semibold text-slate-700">{children}</th>
 );
 
-const Empty = () => (
-  <div className="h-full grid place-items-center text-slate-400 text-sm">
-    No facilities match the current filters.
-  </div>
-);
+const Empty = () => {
+  const t = useT();
+  return (
+    <div className="h-full grid place-items-center text-slate-400 text-sm">
+      {t('noFacilitiesMatch')}
+    </div>
+  );
+};

@@ -2,9 +2,11 @@
 
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from 'react-leaflet';
 import type { FacilitySummary } from '@/lib/types';
-import { colorForScore, categorize, CATEGORY_LABEL } from '@/lib/scoring';
+import { colorForScore, categorize } from '@/lib/scoring';
+import { useT, CATEGORY_KEY } from '@/lib/i18n';
 
 export default function FacilityMap({ summaries }: { summaries: FacilitySummary[] }) {
+  const t = useT();
   const withGeo = summaries.filter(
     (s) => typeof s.latitude === 'number' && typeof s.longitude === 'number',
   );
@@ -12,8 +14,7 @@ export default function FacilityMap({ summaries }: { summaries: FacilitySummary[
   if (withGeo.length === 0) {
     return (
       <div className="h-full grid place-items-center text-slate-400 text-sm text-center px-4">
-        Map needs latitude/longitude columns in the data. Add
-        _facility_latitude / _facility_longitude, or map them in Custom Mapping.
+        {t('mapNoGeo')}
       </div>
     );
   }
@@ -48,11 +49,11 @@ export default function FacilityMap({ summaries }: { summaries: FacilitySummary[
             <div className="text-xs">
               <strong>{s.facilityName}</strong>
               <br />
-              Status: {CATEGORY_LABEL[categorize(s.latestTotal)]}
+              {t('status')}: {t(CATEGORY_KEY[categorize(s.latestTotal)])}
               <br />
-              Score: {s.latestTotal}
+              {t('score')}: {s.latestTotal}
               <br />
-              Last assessed: {s.latest.reportingDate}
+              {t('lastAssessed')}: {s.latest.reportingDate}
             </div>
           </Tooltip>
         </CircleMarker>
