@@ -62,6 +62,58 @@ const en: Dict = {
   exporting: 'Exporting…',
   exportNoCharts: 'No charts to export.',
   exportFailed: 'Export failed.',
+  // Shared
+  noFacilitiesMatch: 'No facilities match the current filters.',
+  // Sidebar
+  statusNoRows: '⚠️ No rows parsed. Check the file/columns.',
+  assessmentsLoaded: 'assessments loaded',
+  warnings: 'warnings',
+  testDataLoaded: '✅ Loaded fabricated test data (200 facilities).',
+  koboPlanned:
+    'KoboToolbox API fetch (server URL, asset UID, token) — planned. Use CSV upload or test data for now.',
+  weeksBuffer: '± weeks buffer:',
+  outbreakDomainsHelp: 'Domains included in Outbreak Response analysis.',
+  // Outbreak Response
+  subReadiness: 'Latest total score per facility. Lowest (highest priority) on top.',
+  subDomainScores: 'One row per facility, one column per domain. Cells colored by score thresholds.',
+  subFacilityMap: 'Color = score category; dot size scales with score. Requires latitude/longitude.',
+  thReadiness: 'Readiness',
+  thCriticalGaps: 'Critical-gap domains',
+  // Summary View
+  subTrajectory: 'One line per facility; dashed reference lines at 50 and 80.',
+  axisReportingDate: 'Reporting Date',
+  axisDaysSinceBaseline: 'Days Since Baseline',
+  axisAssessmentNumber: 'Assessment #',
+  trend: 'Trend',
+  trendAll: 'All',
+  trendIncreasing: 'Increasing',
+  trendDecreasing: 'Decreasing',
+  trendStatic: 'Static',
+  subChangeBaseline:
+    'Facility × domain change from baseline to latest. Green = improvement, red = decline.',
+  thAssessments: 'Assessments',
+  thBaselineDate: 'Baseline Date',
+  thLatestDate: 'Latest Date',
+  thFollowUpDays: 'Follow-up (d)',
+  thBaseline: 'Baseline',
+  thLatest: 'Latest',
+  thDeltaTotal: 'Δ Total',
+  // Facility Deep Dive
+  assessmentsLast30: 'Assessments (Last 30 Days)',
+  assessmentsLast7: 'Assessments (Last 7 Days)',
+  assessment: 'Assessment',
+  total: 'Total',
+  domainDetail: 'Domain detail',
+  thDomain: 'Domain',
+  thDeltaBaseline: 'Δ Baseline',
+  divergingView: 'Diverging View',
+  subDiverging:
+    'Net change per domain since baseline, sorted biggest loss (left) → biggest gain (right).',
+  axisDeltaSinceBaseline: 'Δ since baseline',
+  // Facility Map
+  mapNoGeo:
+    'Map needs latitude/longitude columns in the data. Add _facility_latitude / _facility_longitude, or map them in Custom Mapping.',
+  mapLoading: 'Loading map…',
 };
 
 const fr: Dict = {
@@ -121,6 +173,60 @@ const fr: Dict = {
   exporting: 'Exportation…',
   exportNoCharts: 'Aucun graphique à exporter.',
   exportFailed: "Échec de l'exportation.",
+  // Shared
+  noFacilitiesMatch: 'Aucun établissement ne correspond aux filtres actuels.',
+  // Sidebar
+  statusNoRows: '⚠️ Aucune ligne analysée. Vérifiez le fichier/les colonnes.',
+  assessmentsLoaded: 'évaluations chargées',
+  warnings: 'avertissements',
+  testDataLoaded: '✅ Données test fictives chargées (200 établissements).',
+  koboPlanned:
+    "Récupération via API KoboToolbox (URL du serveur, UID, jeton) — à venir. Utilisez l'import CSV ou les données test pour l'instant.",
+  weeksBuffer: '± semaines tampon :',
+  outbreakDomainsHelp: "Domaines inclus dans l'analyse Réponse à l'épidémie.",
+  // Outbreak Response
+  subReadiness: 'Dernier score total par établissement. Le plus bas (priorité la plus élevée) en haut.',
+  subDomainScores:
+    'Une ligne par établissement, une colonne par domaine. Cellules colorées selon les seuils.',
+  subFacilityMap:
+    'Couleur = catégorie de score ; taille du point selon le score. Nécessite latitude/longitude.',
+  thReadiness: 'Préparation',
+  thCriticalGaps: 'Domaines à lacunes critiques',
+  // Summary View
+  subTrajectory: 'Une ligne par établissement ; lignes de référence en pointillés à 50 et 80.',
+  axisReportingDate: 'Date de rapport',
+  axisDaysSinceBaseline: 'Jours depuis la référence',
+  axisAssessmentNumber: 'Évaluation n°',
+  trend: 'Tendance',
+  trendAll: 'Toutes',
+  trendIncreasing: 'En hausse',
+  trendDecreasing: 'En baisse',
+  trendStatic: 'Stable',
+  subChangeBaseline:
+    'Évolution établissement × domaine de la référence au dernier relevé. Vert = amélioration, rouge = déclin.',
+  thAssessments: 'Évaluations',
+  thBaselineDate: 'Date de référence',
+  thLatestDate: 'Dernière date',
+  thFollowUpDays: 'Suivi (j)',
+  thBaseline: 'Référence',
+  thLatest: 'Dernier',
+  thDeltaTotal: 'Δ Total',
+  // Facility Deep Dive
+  assessmentsLast30: 'Évaluations (30 derniers jours)',
+  assessmentsLast7: 'Évaluations (7 derniers jours)',
+  assessment: 'Évaluation',
+  total: 'Total',
+  domainDetail: 'Détail par domaine',
+  thDomain: 'Domaine',
+  thDeltaBaseline: 'Δ Référence',
+  divergingView: 'Vue divergente',
+  subDiverging:
+    'Variation nette par domaine depuis la référence, triée de la plus grande perte (gauche) au plus grand gain (droite).',
+  axisDeltaSinceBaseline: 'Δ depuis la référence',
+  // Facility Map
+  mapNoGeo:
+    'La carte nécessite des colonnes latitude/longitude. Ajoutez _facility_latitude / _facility_longitude, ou mappez-les dans la Correspondance personnalisée.',
+  mapLoading: 'Chargement de la carte…',
 };
 
 const es: Dict = {
@@ -180,9 +286,70 @@ const es: Dict = {
   exporting: 'Exportando…',
   exportNoCharts: 'No hay gráficos para exportar.',
   exportFailed: 'Error al exportar.',
+  // Shared
+  noFacilitiesMatch: 'Ningún establecimiento coincide con los filtros actuales.',
+  // Sidebar
+  statusNoRows: '⚠️ No se analizaron filas. Verifique el archivo/las columnas.',
+  assessmentsLoaded: 'evaluaciones cargadas',
+  warnings: 'advertencias',
+  testDataLoaded: '✅ Datos de prueba ficticios cargados (200 establecimientos).',
+  koboPlanned:
+    'Descarga por API de KoboToolbox (URL del servidor, UID, token): próximamente. Use la carga CSV o los datos de prueba por ahora.',
+  weeksBuffer: '± semanas de margen:',
+  outbreakDomainsHelp: 'Dominios incluidos en el análisis de Respuesta al brote.',
+  // Outbreak Response
+  subReadiness: 'Última puntuación total por establecimiento. La más baja (mayor prioridad) arriba.',
+  subDomainScores:
+    'Una fila por establecimiento, una columna por dominio. Celdas coloreadas según los umbrales.',
+  subFacilityMap:
+    'Color = categoría de puntuación; el tamaño del punto varía con la puntuación. Requiere latitud/longitud.',
+  thReadiness: 'Preparación',
+  thCriticalGaps: 'Dominios con brechas críticas',
+  // Summary View
+  subTrajectory: 'Una línea por establecimiento; líneas de referencia discontinuas en 50 y 80.',
+  axisReportingDate: 'Fecha de informe',
+  axisDaysSinceBaseline: 'Días desde la referencia',
+  axisAssessmentNumber: 'Evaluación n.º',
+  trend: 'Tendencia',
+  trendAll: 'Todas',
+  trendIncreasing: 'En aumento',
+  trendDecreasing: 'En descenso',
+  trendStatic: 'Estable',
+  subChangeBaseline:
+    'Cambio establecimiento × dominio de la referencia a lo último. Verde = mejora, rojo = deterioro.',
+  thAssessments: 'Evaluaciones',
+  thBaselineDate: 'Fecha de referencia',
+  thLatestDate: 'Última fecha',
+  thFollowUpDays: 'Seguimiento (d)',
+  thBaseline: 'Referencia',
+  thLatest: 'Último',
+  thDeltaTotal: 'Δ Total',
+  // Facility Deep Dive
+  assessmentsLast30: 'Evaluaciones (últimos 30 días)',
+  assessmentsLast7: 'Evaluaciones (últimos 7 días)',
+  assessment: 'Evaluación',
+  total: 'Total',
+  domainDetail: 'Detalle por dominio',
+  thDomain: 'Dominio',
+  thDeltaBaseline: 'Δ Referencia',
+  divergingView: 'Vista divergente',
+  subDiverging:
+    'Cambio neto por dominio desde la referencia, ordenado de mayor pérdida (izquierda) a mayor ganancia (derecha).',
+  axisDeltaSinceBaseline: 'Δ desde la referencia',
+  // Facility Map
+  mapNoGeo:
+    'El mapa necesita columnas de latitud/longitud. Agregue _facility_latitude / _facility_longitude, o mapéelas en Mapeo personalizado.',
+  mapLoading: 'Cargando mapa…',
 };
 
 const DICTS: Record<Language, Dict> = { en, fr, es };
+
+/** Map a readiness category id to its translation key (ids differ from keys). */
+export const CATEGORY_KEY: Record<'critical' | 'atrisk' | 'ready', string> = {
+  critical: 'critical',
+  atrisk: 'atRisk',
+  ready: 'ready',
+};
 
 export function useT() {
   const lang = useStore((s) => s.language);
