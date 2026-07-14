@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Plot from '@/components/Plot';
 import { ChartCard } from '@/components/ChartCard';
+import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
@@ -20,6 +21,7 @@ const FacilityMap = dynamic(() => import('@/components/FacilityMap'), {
 export function OutbreakResponseTab() {
   const t = useT();
   const isMobile = useIsMobile();
+  const rootRef = useRef<HTMLDivElement>(null);
   const { summaries } = useDerived();
   const outbreakDomains = useStore((s) => s.outbreakDomains);
   const domainList = DOMAINS.filter((d) => outbreakDomains.includes(d.id));
@@ -34,8 +36,22 @@ export function OutbreakResponseTab() {
   // Readiness index: ranked ascending (lowest/highest priority on top).
   const ranked = summaries; // already sorted asc by latestTotal in summarize()
 
+  const csvRows = summaries.map((s) => ({
+    Facility: s.facilityName,
+    Readiness: s.latestTotal,
+    'Critical-gap domains': s.criticalDomains.map((id) => domainById(id)?.label ?? id).join('; '),
+    'Last Assessed': s.latest.reportingDate,
+    Status: categorize(s.latestTotal),
+  }));
+
   return (
-    <div className="space-y-4">
+    <div ref={rootRef} className="space-y-4">
+      <ExportBar
+        rootRef={rootRef}
+        deckTitle="Outbreak Response"
+        fileBase="outbreak-response"
+        csv={{ rows: csvRows, fileName: 'outbreak-response-dispatch.csv' }}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <IndicatorBox
           label={`🟢 ${t('ready')}`}

@@ -57,6 +57,11 @@ const en: Dict = {
   lastAssessed: 'Last Assessed',
   openMenu: 'Open menu',
   closeMenu: 'Close menu',
+  exportCsv: 'Export table (CSV)',
+  exportPptx: 'Export charts (PPTX)',
+  exporting: 'Exporting…',
+  exportNoCharts: 'No charts to export.',
+  exportFailed: 'Export failed.',
 };
 
 const fr: Dict = {
@@ -111,6 +116,11 @@ const fr: Dict = {
   lastAssessed: 'Dernière évaluation',
   openMenu: 'Ouvrir le menu',
   closeMenu: 'Fermer le menu',
+  exportCsv: 'Exporter le tableau (CSV)',
+  exportPptx: 'Exporter les graphiques (PPTX)',
+  exporting: 'Exportation…',
+  exportNoCharts: 'Aucun graphique à exporter.',
+  exportFailed: "Échec de l'exportation.",
 };
 
 const es: Dict = {
@@ -165,6 +175,11 @@ const es: Dict = {
   lastAssessed: 'Última evaluación',
   openMenu: 'Abrir menú',
   closeMenu: 'Cerrar menú',
+  exportCsv: 'Exportar tabla (CSV)',
+  exportPptx: 'Exportar gráficos (PPTX)',
+  exporting: 'Exportando…',
+  exportNoCharts: 'No hay gráficos para exportar.',
+  exportFailed: 'Error al exportar.',
 };
 
 const DICTS: Record<Language, Dict> = { en, fr, es };

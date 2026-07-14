@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Plot from '@/components/Plot';
 import { ChartCard } from '@/components/ChartCard';
+import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
@@ -17,6 +18,7 @@ const TODAY = '2024-09-30'; // demo "viewing date" aligned to the test data wind
 
 export function SummaryViewTab() {
   const t = useT();
+  const rootRef = useRef<HTMLDivElement>(null);
   const { filtered, summaries } = useDerived();
   const timeAxis = useStore((s) => s.timeAxis);
   const setTimeAxis = useStore((s) => s.setTimeAxis);
@@ -29,8 +31,26 @@ export function SummaryViewTab() {
 
   const shown = trend === 'all' ? summaries : summaries.filter((s) => s.trend === trend);
 
+  const csvRows = summaries.map((s) => ({
+    Facility: s.facilityName,
+    Assessments: s.assessmentCount,
+    'Baseline Date': s.baseline.reportingDate,
+    'Latest Date': s.latest.reportingDate,
+    'Follow-up (days)': s.followUpDays,
+    'Baseline Total': s.baselineTotal,
+    'Latest Total': s.latestTotal,
+    'Delta Total': s.deltaTotal,
+    Status: s.latestCategory,
+  }));
+
   return (
-    <div className="space-y-4">
+    <div ref={rootRef} className="space-y-4">
+      <ExportBar
+        rootRef={rootRef}
+        deckTitle="Summary View"
+        fileBase="summary-view"
+        csv={{ rows: csvRows, fileName: 'summary-progress.csv' }}
+      />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <IndicatorBox label={t('facilitiesTracked')} value={m.facilitiesTracked} gradient={GRADIENTS.blue} icon="🏥" />
         <IndicatorBox label={t('avgAssessments')} value={m.avgPerFacility.toFixed(1)} gradient={GRADIENTS.purple} icon="🔁" />
