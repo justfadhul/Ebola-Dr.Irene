@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Plot from '@/components/Plot';
 import { ChartCard } from '@/components/ChartCard';
+import { ExportBar } from '@/components/ExportBar';
 import { IndicatorBox, GRADIENTS } from '@/components/IndicatorBox';
 import { useDerived } from '@/lib/useDerived';
 import { useStore } from '@/store/useStore';
@@ -16,6 +17,7 @@ const TODAY = '2024-09-30';
 export function FacilityDeepDiveTab() {
   const t = useT();
   const isMobile = useIsMobile();
+  const rootRef = useRef<HTMLDivElement>(null);
   const { summaries } = useDerived();
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
   const setSelectedFacility = useStore((s) => s.setSelectedFacility);
@@ -46,8 +48,27 @@ export function FacilityDeepDiveTab() {
     (a) => daysBetween(a.reportingDate, TODAY) <= 7 && daysBetween(a.reportingDate, TODAY) >= 0,
   ).length;
 
+  const csvRows = DOMAINS.map((d) => {
+    const score = assessment.domainScores[d.id] ?? 0;
+    return {
+      Domain: `${d.order}. ${d.label}`,
+      Score: score,
+      'Delta Baseline': score - (facility.baseline.domainScores[d.id] ?? 0),
+      Status: categorize(score),
+    };
+  });
+
   return (
-    <div className="space-y-4">
+    <div ref={rootRef} className="space-y-4">
+      <ExportBar
+        rootRef={rootRef}
+        deckTitle={`Facility Deep Dive — ${facility.facilityName}`}
+        fileBase={`facility-${facility.facilityId}`}
+        csv={{
+          rows: csvRows,
+          fileName: `facility-${facility.facilityId}-assessment-${idx + 1}.csv`,
+        }}
+      />
       <div className="card p-4 grid md:grid-cols-2 gap-3">
         <label className="block">
           <span className="text-xs font-medium text-slate-600">🏥 {t('facilityToInspect')}</span>
