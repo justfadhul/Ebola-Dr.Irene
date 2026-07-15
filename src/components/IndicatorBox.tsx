@@ -12,14 +12,24 @@ export function IndicatorBox({
   icon?: string;
 }) {
   return (
-    <div
-      className="rounded-xl p-4 text-white shadow-sm flex items-center gap-3"
-      style={{ background: gradient }}
-    >
-      {icon && <span className="text-2xl opacity-90">{icon}</span>}
-      <div>
-        <div className="text-sm font-medium opacity-95">{label}</div>
-        <div className="text-3xl font-bold leading-tight">{value}</div>
+    <div className="card px-4 py-3 flex items-center gap-3">
+      {icon ? (
+        <span
+          className="grid place-items-center h-9 w-9 shrink-0 rounded-lg text-base"
+          style={{ background: 'var(--accent-soft, #eef1ff)' }}
+        >
+          <span aria-hidden="true">{icon}</span>
+        </span>
+      ) : (
+        <span
+          aria-hidden="true"
+          className="h-9 w-1.5 shrink-0 rounded-full"
+          style={{ background: gradient }}
+        />
+      )}
+      <div className="min-w-0">
+        <div className="text-xs font-medium text-subtle truncate">{label}</div>
+        <div className="text-2xl font-semibold text-ink leading-tight tracking-tight">{value}</div>
       </div>
     </div>
   );

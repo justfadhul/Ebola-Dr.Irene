@@ -7,6 +7,10 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   appTitle: 'Ebola IPC Assessment Analysis Dashboard',
+  appShort: 'IPC Dashboard',
+  subtabResponse: 'Readiness snapshot for prioritizing the outbreak response.',
+  subtabSummary: 'How facility scores are changing over time.',
+  subtabDeepDive: 'Assessment detail for a single facility.',
   dataSource: 'Data Source',
   viewControls: 'View Controls',
   outbreakSettings: 'Outbreak Settings',
@@ -144,6 +148,10 @@ const en: Dict = {
 
 const fr: Dict = {
   appTitle: "Tableau de bord d'analyse des évaluations IPC Ebola",
+  appShort: 'Tableau IPC',
+  subtabResponse: "Aperçu de la préparation pour prioriser la réponse à l'épidémie.",
+  subtabSummary: 'Évolution des scores des établissements dans le temps.',
+  subtabDeepDive: "Détail de l'évaluation d'un établissement.",
   dataSource: 'Source de données',
   viewControls: 'Contrôles de vue',
   outbreakSettings: "Paramètres d'épidémie",
@@ -283,6 +291,10 @@ const fr: Dict = {
 
 const es: Dict = {
   appTitle: 'Panel de análisis de evaluaciones IPC de Ébola',
+  appShort: 'Panel IPC',
+  subtabResponse: 'Vista de preparación para priorizar la respuesta al brote.',
+  subtabSummary: 'Cómo cambian las puntuaciones de los establecimientos con el tiempo.',
+  subtabDeepDive: 'Detalle de la evaluación de un establecimiento.',
   dataSource: 'Fuente de datos',
   viewControls: 'Controles de vista',
   outbreakSettings: 'Ajustes de brote',
