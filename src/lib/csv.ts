@@ -80,6 +80,16 @@ function toAssessment(
   };
 }
 
+/** Map already-parsed records (e.g. from the Kobo API) into Assessments. */
+export function mapRecords(
+  records: Record<string, unknown>[],
+  mapping: ColumnMapping = {},
+): Assessment[] {
+  return records
+    .filter((r) => Object.keys(r).length > 0)
+    .map((r, i) => toAssessment(r, mapping, i));
+}
+
 export function parseCsv(text: string, mapping: ColumnMapping = {}): ParseResult {
   const parsed = Papa.parse<Record<string, unknown>>(text, {
     header: true,

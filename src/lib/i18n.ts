@@ -87,6 +87,18 @@ const en: Dict = {
   mapFacilityId: 'Facility ID',
   mapLatitude: 'Latitude',
   mapLongitude: 'Longitude',
+  koboServerUrl: 'Server URL',
+  koboAssetUid: 'Asset UID',
+  koboToken: 'API token',
+  koboFetch: 'Fetch Data',
+  koboFetching: 'Fetching…',
+  koboCorsNote:
+    'Runs in your browser against your Kobo server — the server must allow cross-origin (CORS) requests.',
+  koboErrMissing: '⚠️ Enter the server URL, asset UID, and token.',
+  koboErrAuth: '⚠️ Authentication failed — check the API token.',
+  koboErrNetwork: '⚠️ Could not reach the server (network or CORS).',
+  koboErrServer: '⚠️ The server returned an error.',
+  koboErrEmpty: '⚠️ No submissions were returned.',
   // Outbreak Response
   subReadiness: 'Latest total score per facility. Lowest (highest priority) on top.',
   subDomainScores: 'One row per facility, one column per domain. Cells colored by score thresholds.',
@@ -212,6 +224,18 @@ const fr: Dict = {
   mapFacilityId: "ID de l'établissement",
   mapLatitude: 'Latitude',
   mapLongitude: 'Longitude',
+  koboServerUrl: 'URL du serveur',
+  koboAssetUid: "UID de l'actif",
+  koboToken: 'Jeton API',
+  koboFetch: 'Récupérer les données',
+  koboFetching: 'Récupération…',
+  koboCorsNote:
+    "S'exécute dans votre navigateur vers votre serveur Kobo — le serveur doit autoriser les requêtes cross-origin (CORS).",
+  koboErrMissing: "⚠️ Saisissez l'URL du serveur, l'UID et le jeton.",
+  koboErrAuth: '⚠️ Échec de authentification — vérifiez le jeton API.',
+  koboErrNetwork: '⚠️ Serveur injoignable (réseau ou CORS).',
+  koboErrServer: '⚠️ Le serveur a renvoyé une erreur.',
+  koboErrEmpty: '⚠️ Aucune soumission renvoyée.',
   // Outbreak Response
   subReadiness: 'Dernier score total par établissement. Le plus bas (priorité la plus élevée) en haut.',
   subDomainScores:
@@ -339,6 +363,18 @@ const es: Dict = {
   mapFacilityId: 'ID del establecimiento',
   mapLatitude: 'Latitud',
   mapLongitude: 'Longitud',
+  koboServerUrl: 'URL del servidor',
+  koboAssetUid: 'UID del activo',
+  koboToken: 'Token de API',
+  koboFetch: 'Obtener datos',
+  koboFetching: 'Obteniendo…',
+  koboCorsNote:
+    'Se ejecuta en su navegador contra su servidor Kobo — el servidor debe permitir solicitudes de origen cruzado (CORS).',
+  koboErrMissing: '⚠️ Ingrese la URL del servidor, el UID y el token.',
+  koboErrAuth: '⚠️ Error de autenticación: verifique el token de API.',
+  koboErrNetwork: '⚠️ No se pudo conectar al servidor (red o CORS).',
+  koboErrServer: '⚠️ El servidor devolvió un error.',
+  koboErrEmpty: '⚠️ No se devolvieron envíos.',
   // Outbreak Response
   subReadiness: 'Última puntuación total por establecimiento. La más baja (mayor prioridad) arriba.',
   subDomainScores:

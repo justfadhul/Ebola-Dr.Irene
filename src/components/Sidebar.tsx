@@ -6,6 +6,7 @@ import { useStore, type Language } from '@/store/useStore';
 import { useT } from '@/lib/i18n';
 import { generateTestData } from '@/lib/testData';
 import { parseCsv, autoSuggestMapping, type ColumnMapping } from '@/lib/csv';
+import { fetchKoboAssessments, KoboError, type KoboErrorCode } from '@/lib/kobo';
 import { DOMAINS, FACILITY_LEVELS } from '@/lib/domains';
 
 type Section = 'data' | 'view' | 'outbreak';
@@ -198,9 +199,7 @@ function DataSourceSection() {
         />
       )}
 
-      {mode === 'kobo' && (
-        <p className="text-xs text-slate-500">{t('koboPlanned')}</p>
-      )}
+      {mode === 'kobo' && <KoboSection onLoaded={setStatus} />}
 
       <button
         onClick={() => {
@@ -227,6 +226,77 @@ function DataSourceSection() {
 
 function distinct<T>(arr: T[]): T[] {
   return Array.from(new Set(arr));
+}
+
+function KoboSection({ onLoaded }: { onLoaded: (s: string) => void }) {
+  const t = useT();
+  const loadData = useStore((s) => s.loadData);
+  const [serverUrl, setServerUrl] = useState('');
+  const [assetUid, setAssetUid] = useState('');
+  const [token, setToken] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState('');
+
+  const errMsg = (code: KoboErrorCode) =>
+    ({
+      missing: t('koboErrMissing'),
+      auth: t('koboErrAuth'),
+      network: t('koboErrNetwork'),
+      server: t('koboErrServer'),
+      empty: t('koboErrEmpty'),
+    })[code];
+
+  const fetchNow = async () => {
+    setBusy(true);
+    setProgress('');
+    onLoaded('');
+    try {
+      const rows = await fetchKoboAssessments({ serverUrl, assetUid, token }, (n, total) =>
+        setProgress(`${n}/${total}`),
+      );
+      loadData(rows, `Kobo: ${assetUid.trim()}`);
+      onLoaded(`✅ ${rows.length} ${t('assessmentsLoaded')}.`);
+    } catch (e) {
+      onLoaded(errMsg(e instanceof KoboError ? e.code : 'server'));
+    } finally {
+      setBusy(false);
+      setProgress('');
+    }
+  };
+
+  const field = (
+    label: string,
+    value: string,
+    set: (v: string) => void,
+    type: 'text' | 'password' = 'text',
+  ) => (
+    <label className="block">
+      <span className="text-xs font-medium text-slate-600">{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => set(e.target.value)}
+        className="mt-1 w-full border border-slate-300 rounded px-2 py-1.5 text-sm"
+      />
+    </label>
+  );
+
+  return (
+    <div className="space-y-2">
+      {field(t('koboServerUrl'), serverUrl, setServerUrl)}
+      {field(t('koboAssetUid'), assetUid, setAssetUid)}
+      {field(t('koboToken'), token, setToken, 'password')}
+      <button
+        type="button"
+        onClick={fetchNow}
+        disabled={busy}
+        className="w-full bg-slate-800 text-white rounded py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50"
+      >
+        {busy ? `${t('koboFetching')} ${progress}` : `⬇️ ${t('koboFetch')}`}
+      </button>
+      <p className="text-[11px] text-slate-500 leading-snug">{t('koboCorsNote')}</p>
+    </div>
+  );
 }
 
 type StdKey = Exclude<keyof ColumnMapping, 'domains'>;
