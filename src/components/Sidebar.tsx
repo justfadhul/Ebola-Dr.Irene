@@ -5,7 +5,7 @@ import Papa from 'papaparse';
 import { useStore, type Language } from '@/store/useStore';
 import { useT } from '@/lib/i18n';
 import { generateTestData } from '@/lib/testData';
-import { parseCsv, autoSuggestMapping } from '@/lib/csv';
+import { parseCsv, autoSuggestMapping, type ColumnMapping } from '@/lib/csv';
 import { DOMAINS, FACILITY_LEVELS } from '@/lib/domains';
 
 type Section = 'data' | 'view' | 'outbreak';
@@ -102,25 +102,45 @@ function DataSourceSection() {
     useStore();
   const [mode, setMode] = useState<'standard' | 'custom' | 'kobo'>('standard');
   const [status, setStatus] = useState<string>('');
+  // Custom mapping: hold the file until the user confirms the column mapping.
+  const [pending, setPending] = useState<{ text: string; headers: string[]; name: string } | null>(
+    null,
+  );
+  const [mapping, setMapping] = useState<ColumnMapping>({});
+
+  const commit = (text: string, m: ColumnMapping, name: string) => {
+    const { rows, errors } = parseCsv(text, m);
+    if (rows.length === 0) {
+      setStatus(t('statusNoRows'));
+      return false;
+    }
+    loadData(rows, name);
+    setStatus(
+      `✅ ${rows.length} ${t('assessmentsLoaded')}${errors.length ? ` (${errors.length} ${t('warnings')})` : ''}.`,
+    );
+    return true;
+  };
 
   const onFile = (file: File, custom: boolean) => {
     const reader = new FileReader();
     reader.onload = () => {
       const text = String(reader.result ?? '');
-      const mapping = custom
-        ? autoSuggestMapping(Papa.parse(text, { header: true, preview: 1 }).meta.fields ?? [])
-        : {};
-      const { rows, errors } = parseCsv(text, mapping);
-      if (rows.length === 0) {
-        setStatus(t('statusNoRows'));
-        return;
+      if (custom) {
+        // Show the mapping panel with auto-suggested guesses; don't parse yet.
+        const headers = Papa.parse(text, { header: true, preview: 1 }).meta.fields ?? [];
+        setMapping(autoSuggestMapping(headers));
+        setPending({ text, headers, name: file.name });
+        setStatus('');
+      } else {
+        setPending(null);
+        commit(text, {}, file.name);
       }
-      loadData(rows, file.name);
-      setStatus(
-        `✅ ${rows.length} ${t('assessmentsLoaded')}${errors.length ? ` (${errors.length} ${t('warnings')})` : ''}.`,
-      );
     };
     reader.readAsText(file);
+  };
+
+  const applyMapping = () => {
+    if (pending && commit(pending.text, mapping, pending.name)) setPending(null);
   };
 
   return (
@@ -169,6 +189,15 @@ function DataSourceSection() {
         </label>
       )}
 
+      {mode === 'custom' && pending && (
+        <CustomMappingPanel
+          headers={pending.headers}
+          mapping={mapping}
+          setMapping={setMapping}
+          onApply={applyMapping}
+        />
+      )}
+
       {mode === 'kobo' && (
         <p className="text-xs text-slate-500">{t('koboPlanned')}</p>
       )}
@@ -198,6 +227,106 @@ function DataSourceSection() {
 
 function distinct<T>(arr: T[]): T[] {
   return Array.from(new Set(arr));
+}
+
+type StdKey = Exclude<keyof ColumnMapping, 'domains'>;
+
+function CustomMappingPanel({
+  headers,
+  mapping,
+  setMapping,
+  onApply,
+}: {
+  headers: string[];
+  mapping: ColumnMapping;
+  setMapping: (m: ColumnMapping) => void;
+  onApply: () => void;
+}) {
+  const t = useT();
+  const [showDomains, setShowDomains] = useState(false);
+
+  const fields: { key: StdKey; label: string }[] = [
+    { key: 'facilityName', label: t('mapFacilityName') },
+    { key: 'reportingDate', label: t('mapReportingDate') },
+    { key: 'facilityId', label: t('mapFacilityId') },
+    { key: 'province', label: t('province') },
+    { key: 'district', label: t('district') },
+    { key: 'subdistrict', label: t('subdistrict') },
+    { key: 'facilityLevel', label: t('facilityLevel') },
+    { key: 'totalScore', label: t('totalScore') },
+    { key: 'latitude', label: t('mapLatitude') },
+    { key: 'longitude', label: t('mapLongitude') },
+  ];
+
+  const setField = (key: StdKey, val: string) =>
+    setMapping({ ...mapping, [key]: val || undefined });
+  const setDomain = (id: string, val: string) => {
+    const domains = { ...(mapping.domains ?? {}) };
+    if (val) domains[id] = val;
+    else delete domains[id];
+    setMapping({ ...mapping, domains });
+  };
+
+  const canApply = !!mapping.facilityName && !!mapping.reportingDate;
+
+  const sel = (value: string | undefined, onChange: (v: string) => void) => (
+    <select
+      value={value ?? ''}
+      onChange={(e) => onChange(e.target.value)}
+      className="mt-0.5 w-full border border-slate-300 rounded px-1.5 py-1 text-xs"
+    >
+      <option value="">{t('colNone')}</option>
+      {headers.map((h) => (
+        <option key={h} value={h}>
+          {h}
+        </option>
+      ))}
+    </select>
+  );
+
+  return (
+    <div className="rounded border border-slate-200 bg-slate-50 p-2 space-y-2">
+      <div className="text-xs font-semibold text-slate-700">{t('mapTitle')}</div>
+      <p className="text-[11px] text-slate-500 leading-snug">{t('mapHelp')}</p>
+      <div className="space-y-1.5">
+        {fields.map((f) => (
+          <label key={f.key} className="block">
+            <span className="text-[11px] text-slate-600">{f.label}</span>
+            {sel(mapping[f.key], (v) => setField(f.key, v))}
+          </label>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setShowDomains((s) => !s)}
+        className="text-[11px] text-slate-500 hover:text-slate-700 underline"
+      >
+        {showDomains ? '▲' : '▼'} {t('domainColumns')} ({DOMAINS.length})
+      </button>
+      {showDomains && (
+        <div className="space-y-1.5 max-h-48 overflow-y-auto">
+          {DOMAINS.map((d) => (
+            <label key={d.id} className="block">
+              <span className="text-[11px] text-slate-600">
+                {d.order}. {d.label}
+              </span>
+              {sel(mapping.domains?.[d.id], (v) => setDomain(d.id, v))}
+            </label>
+          ))}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={onApply}
+        disabled={!canApply}
+        className="w-full bg-slate-800 text-white rounded py-1.5 text-xs font-medium hover:bg-slate-700 disabled:opacity-40"
+      >
+        {t('applyMapping')}
+      </button>
+    </div>
+  );
 }
 
 function ViewControlsSection() {
