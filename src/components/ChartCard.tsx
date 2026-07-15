@@ -15,7 +15,11 @@ export function ChartCard({
     <section className="card p-4">
       <h3 className="font-semibold text-slate-800">{title}</h3>
       {subtitle && <p className="text-xs text-slate-500 mt-0.5 mb-2">{subtitle}</p>}
-      <div style={{ height }}>{children}</div>
+      {/* Plotly renders an SVG canvas that screen readers can't interpret; give
+          the chart region an accessible name from its title + description. */}
+      <div style={{ height }} role="img" aria-label={subtitle ? `${title}. ${subtitle}` : title}>
+        {children}
+      </div>
     </section>
   );
 }

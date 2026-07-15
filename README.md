@@ -25,11 +25,18 @@ Three operational views, all driven by one scoring model
   and a diverging domain-change-since-baseline chart.
 
 **Data sources:** CSV (standard columns), CSV (custom column mapping with
-keyword auto-suggest), and a built-in fabricated **Test Data** set (200
-facilities, 3 provinces). A KoboToolbox API fetch is stubbed for a later phase.
+keyword auto-suggest and a review-before-apply panel), a **KoboToolbox API**
+fetch (paginated, token auth — requires the Kobo server to allow CORS), and a
+built-in fabricated **Test Data** set (200 facilities, 3 provinces).
 
-**Sidebar controls:** language (EN/FR/ES), geography/level/date filters, a
-custom baseline anchor, and the Outbreak Response domain subset.
+**Sidebar controls:** language (EN/FR/ES, applied across all UI text),
+geography cascade (province → district → subdistrict), facility level/date
+filters, a searchable facility exclude list, a custom baseline anchor, and the
+Outbreak Response domain subset.
+
+**Also:** per-tab exports (charts → PowerPoint, tables → CSV), a fully
+responsive mobile layout, and an installable, offline-capable PWA (the app
+shell and assets are cached after first load; uploaded data is never cached).
 
 ## Getting started
 

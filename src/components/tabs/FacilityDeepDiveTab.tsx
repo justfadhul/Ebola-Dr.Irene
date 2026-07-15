@@ -12,13 +12,11 @@ import { useIsMobile } from '@/lib/useIsMobile';
 import { DOMAINS } from '@/lib/domains';
 import { categorize, colorForScore, colorForDelta, daysBetween, CATEGORY_EMOJI } from '@/lib/scoring';
 
-const TODAY = '2024-09-30';
-
 export function FacilityDeepDiveTab() {
   const t = useT();
   const isMobile = useIsMobile();
   const rootRef = useRef<HTMLDivElement>(null);
-  const { summaries } = useDerived();
+  const { summaries, referenceDate } = useDerived();
   const selectedFacilityId = useStore((s) => s.selectedFacilityId);
   const setSelectedFacility = useStore((s) => s.setSelectedFacility);
   const [assessmentIdx, setAssessmentIdx] = useState<number | null>(null);
@@ -40,10 +38,14 @@ export function FacilityDeepDiveTab() {
   const idx = assessmentIdx ?? facility.assessments.length - 1;
   const assessment = facility.assessments[idx];
   const since30 = facility.assessments.filter(
-    (a) => daysBetween(a.reportingDate, TODAY) <= 30 && daysBetween(a.reportingDate, TODAY) >= 0,
+    (a) =>
+      daysBetween(a.reportingDate, referenceDate) <= 30 &&
+      daysBetween(a.reportingDate, referenceDate) >= 0,
   ).length;
   const since7 = facility.assessments.filter(
-    (a) => daysBetween(a.reportingDate, TODAY) <= 7 && daysBetween(a.reportingDate, TODAY) >= 0,
+    (a) =>
+      daysBetween(a.reportingDate, referenceDate) <= 7 &&
+      daysBetween(a.reportingDate, referenceDate) >= 0,
   ).length;
 
   const csvRows = DOMAINS.map((d) => {

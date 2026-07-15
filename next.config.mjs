@@ -11,6 +11,9 @@ const nextConfig = {
   images: { unoptimized: true }, // no image optimization server in a static export
   trailingSlash: true,
   reactStrictMode: true,
+  // Exposed to the client so the service-worker registration can prefix the
+  // sw.js path/scope correctly under a GitHub Pages sub-path (empty on Vercel).
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
 };
 
 export default nextConfig;
