@@ -16,14 +16,15 @@ export default function Home() {
   const dataLoaded = useStore((s) => s.dataLoaded);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const tabs: [TabId, string, string][] = [
-    ['response', '🚨', t('tabResponse')],
-    ['summary', '🌐', t('tabSummary')],
-    ['deepdive', '🏥', t('tabDeepDive')],
+  const tabs: [TabId, string, string, string][] = [
+    ['response', '🚨', t('tabResponse'), t('subtabResponse')],
+    ['summary', '🌐', t('tabSummary'), t('subtabSummary')],
+    ['deepdive', '🏥', t('tabDeepDive'), t('subtabDeepDive')],
   ];
+  const active = tabs.find(([id]) => id === activeTab)!;
 
   return (
-    <div className="lg:flex">
+    <div className="lg:flex bg-canvas">
       {/* Mobile backdrop — tap to dismiss the drawer */}
       {sidebarOpen && (
         <div
@@ -35,42 +36,61 @@ export default function Home() {
 
       <Sidebar mobileOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="flex-1 h-screen overflow-y-auto">
-        <div className="sticky top-0 z-20 flex items-stretch bg-white border-b border-slate-200 px-2 sm:px-4">
-          {/* Hamburger opens the sidebar drawer — mobile only */}
+      <main className="flex-1 h-screen overflow-y-auto bg-canvas">
+        {/* Breadcrumb bar */}
+        <div className="sticky top-0 z-20 flex items-center gap-2 bg-surface/90 backdrop-blur border-b border-hairline px-3 sm:px-5 h-12">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden shrink-0 self-center p-1.5 mr-1 rounded hover:bg-slate-100 text-slate-700"
+            className="lg:hidden shrink-0 p-1.5 -ml-1 rounded-lg hover:bg-black/[0.04] text-ink"
             aria-label={t('openMenu')}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <nav className="flex gap-1 overflow-x-auto" role="tablist" aria-label={t('appTitle')}>
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm min-w-0">
+            <span className="text-subtle hidden sm:inline">{t('appShort')}</span>
+            <span className="text-subtle hidden sm:inline" aria-hidden="true">›</span>
+            <span className="font-medium text-ink truncate">
+              <span aria-hidden="true">{active[1]}</span> {active[2]}
+            </span>
+          </nav>
+        </div>
+
+        <div className="px-3 sm:px-5 py-4 sm:py-5">
+          {/* Page header */}
+          <div className="mb-4">
+            <h1 className="text-xl sm:text-2xl font-semibold text-ink tracking-tight">{active[2]}</h1>
+            <p className="text-sm text-subtle mt-0.5">{active[3]}</p>
+          </div>
+
+          {/* Attio-style segmented tabs */}
+          <div
+            className="flex gap-1 mb-5 overflow-x-auto border-b border-hairline"
+            role="tablist"
+            aria-label={t('appTitle')}
+          >
             {tabs.map(([id, icon, label]) => (
               <button
                 key={id}
                 role="tab"
                 aria-selected={activeTab === id}
                 onClick={() => setActiveTab(id)}
-                className={`px-3 sm:px-4 py-3 text-sm font-medium border-b-2 -mb-px whitespace-nowrap ${
+                className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px whitespace-nowrap transition-colors ${
                   activeTab === id
-                    ? 'border-slate-800 text-slate-900'
-                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                    ? 'border-accent text-ink'
+                    : 'border-transparent text-subtle hover:text-ink'
                 }`}
               >
                 <span aria-hidden="true">{icon}</span> {label}
               </button>
             ))}
-          </nav>
-        </div>
+          </div>
 
-        <div className="p-3 sm:p-4">
           {!dataLoaded ? (
-            <div className="card p-10 text-center text-slate-500 max-w-xl mx-auto mt-10">
+            <div className="card p-12 text-center text-subtle max-w-lg mx-auto mt-10">
               <div className="text-4xl mb-3" aria-hidden="true">📂</div>
               <p>{t('noData')}</p>
             </div>

@@ -43,19 +43,26 @@ export function ExportBar({
     downloadCsv(csv.fileName, csv.rows);
   };
 
-  const btn =
-    'inline-flex items-center gap-1.5 rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50';
-
   return (
     <div className="flex flex-wrap items-center justify-end gap-2">
       {msg && <span className="text-xs text-red-600">{msg}</span>}
       {csv && (
-        <button type="button" onClick={exportCsv} className={btn} disabled={csv.rows.length === 0}>
-          ⬇️ {t('exportCsv')}
+        <button
+          type="button"
+          onClick={exportCsv}
+          className="btn-secondary disabled:opacity-50"
+          disabled={csv.rows.length === 0}
+        >
+          <span aria-hidden="true">⬇️</span> {t('exportCsv')}
         </button>
       )}
-      <button type="button" onClick={exportPptx} className={btn} disabled={busy}>
-        🖼️ {busy ? t('exporting') : t('exportPptx')}
+      <button
+        type="button"
+        onClick={exportPptx}
+        className="btn-secondary disabled:opacity-50"
+        disabled={busy}
+      >
+        <span aria-hidden="true">🖼️</span> {busy ? t('exporting') : t('exportPptx')}
       </button>
     </div>
   );

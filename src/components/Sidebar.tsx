@@ -28,18 +28,25 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed lg:static inset-y-0 left-0 z-40 w-80 max-w-[85vw] shrink-0 border-r border-slate-200 bg-white h-screen overflow-y-auto transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
-        mobileOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full'
+      className={`fixed lg:static inset-y-0 left-0 z-40 w-80 max-w-[85vw] shrink-0 border-r border-hairline bg-surface h-screen overflow-y-auto transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        mobileOpen ? 'translate-x-0 shadow-pop' : '-translate-x-full'
       }`}
     >
-      <div className="p-3 border-b border-slate-200 flex items-center justify-between gap-2">
-        <div className="font-bold text-slate-800 text-sm leading-snug">
-          🦠 {t('appTitle')}
+      {/* Workspace header, Attio-style */}
+      <div className="px-3 h-12 border-b border-hairline flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span
+            aria-hidden="true"
+            className="grid place-items-center h-6 w-6 shrink-0 rounded-md text-white text-[10px] font-bold"
+            style={{ background: 'linear-gradient(135deg,#1a1a20,#3b3b45)' }}
+          >
+            IPC
+          </span>
+          <span className="font-semibold text-ink text-sm truncate">{t('appShort')}</span>
         </div>
-        {/* Close button — mobile drawer only */}
         <button
           onClick={onClose}
-          className="lg:hidden shrink-0 p-1 rounded hover:bg-slate-100 text-slate-500"
+          className="lg:hidden shrink-0 p-1 rounded-lg hover:bg-black/[0.04] text-subtle"
           aria-label={t('closeMenu')}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -48,27 +55,29 @@ export function Sidebar({
           </svg>
         </button>
       </div>
-      <SectionHeader
-        icon="📂"
-        title={t('dataSource')}
-        open={open.data}
-        onClick={() => toggle('data')}
-      />
-      {open.data && <DataSourceSection />}
-      <SectionHeader
-        icon="🔍"
-        title={t('viewControls')}
-        open={open.view}
-        onClick={() => toggle('view')}
-      />
-      {open.view && <ViewControlsSection />}
-      <SectionHeader
-        icon="🚨"
-        title={t('outbreakSettings')}
-        open={open.outbreak}
-        onClick={() => toggle('outbreak')}
-      />
-      {open.outbreak && <OutbreakSettingsSection />}
+      <div className="p-2 space-y-1">
+        <SectionHeader
+          icon="📂"
+          title={t('dataSource')}
+          open={open.data}
+          onClick={() => toggle('data')}
+        />
+        {open.data && <DataSourceSection />}
+        <SectionHeader
+          icon="🔍"
+          title={t('viewControls')}
+          open={open.view}
+          onClick={() => toggle('view')}
+        />
+        {open.view && <ViewControlsSection />}
+        <SectionHeader
+          icon="🚨"
+          title={t('outbreakSettings')}
+          open={open.outbreak}
+          onClick={() => toggle('outbreak')}
+        />
+        {open.outbreak && <OutbreakSettingsSection />}
+      </div>
     </aside>
   );
 }
@@ -87,12 +96,13 @@ function SectionHeader({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between px-3 py-2.5 text-left font-semibold text-slate-700 hover:bg-slate-50 border-b border-slate-100"
+      className="side-row w-full justify-between font-medium"
+      aria-expanded={open}
     >
-      <span>
-        {icon} {title}
+      <span className="flex items-center gap-2">
+        <span aria-hidden="true">{icon}</span> {title}
       </span>
-      <span className="text-slate-400">{open ? '▲' : '▼'}</span>
+      <span className="text-subtle text-xs" aria-hidden="true">{open ? '▲' : '▼'}</span>
     </button>
   );
 }
@@ -145,7 +155,7 @@ function DataSourceSection() {
   };
 
   return (
-    <div className="p-3 space-y-4 border-b border-slate-200">
+    <div className="px-2 pb-3 pt-1 space-y-3.5">
       <label className="block">
         <span className="text-xs font-medium text-slate-600">🌐 {t('language')}</span>
         <select
@@ -206,7 +216,7 @@ function DataSourceSection() {
           loadData(generateTestData(), 'Test Data (fabricated)');
           setStatus(t('testDataLoaded'));
         }}
-        className="w-full bg-slate-800 text-white rounded py-2 text-sm font-medium hover:bg-slate-700"
+        className="btn-primary w-full"
       >
         🧪 {t('loadTestData')}
       </button>
@@ -290,7 +300,7 @@ function KoboSection({ onLoaded }: { onLoaded: (s: string) => void }) {
         type="button"
         onClick={fetchNow}
         disabled={busy}
-        className="w-full bg-slate-800 text-white rounded py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50"
+        className="btn-primary w-full disabled:opacity-50"
       >
         {busy ? `${t('koboFetching')} ${progress}` : `⬇️ ${t('koboFetch')}`}
       </button>
@@ -391,7 +401,7 @@ function CustomMappingPanel({
         type="button"
         onClick={onApply}
         disabled={!canApply}
-        className="w-full bg-slate-800 text-white rounded py-1.5 text-xs font-medium hover:bg-slate-700 disabled:opacity-40"
+        className="btn-primary w-full !text-xs !py-1.5 disabled:opacity-40"
       >
         {t('applyMapping')}
       </button>
@@ -464,7 +474,7 @@ function ViewControlsSection() {
   };
 
   return (
-    <div className="p-3 space-y-4 border-b border-slate-200 text-sm">
+    <div className="px-2 pb-3 pt-1 space-y-4 text-sm">
       <label className="block">
         <span className="text-xs font-medium text-slate-600">{t('includeAfter')}</span>
         <input
@@ -620,7 +630,7 @@ function OutbreakSettingsSection() {
         : [...outbreakDomains, id],
     );
   return (
-    <div className="p-3 border-b border-slate-200 text-sm">
+    <div className="px-2 pb-3 pt-1 text-sm">
       <p className="text-xs text-slate-500 mb-2">{t('outbreakDomainsHelp')}</p>
       <div className="space-y-1 max-h-64 overflow-y-auto">
         {DOMAINS.map((d) => (

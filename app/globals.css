@@ -5,25 +5,70 @@
 @import 'leaflet/dist/leaflet.css';
 
 :root {
-  --bg: #f1f5f9;
+  --bg: #f6f7f9;
   --panel: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --muted: #64748b;
+  --border: #e9e9ee;
+  --text: #1a1a20;
+  --muted: #6b6b76;
+  --accent: #3b5bff;
+  --accent-soft: #eef1ff;
 }
 
 html,
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica,
+    Arial, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.006em;
 }
 
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+@layer components {
+  /* Attio-style surface card: white, hairline border, soft radius + shadow. */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply btn text-white;
+    background: var(--accent);
+  }
+  .btn-primary:hover {
+    background: #2c49ee;
+  }
+  .btn-secondary {
+    @apply btn border text-ink;
+    background: var(--panel);
+    border-color: var(--border);
+  }
+  .btn-secondary:hover {
+    background: #f4f5f7;
+  }
+
+  /* Small object/section chip, à la Attio object tags. */
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium;
+    background: #f2f3f5;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* Sidebar navigation row. */
+  .side-row {
+    @apply flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink/80 transition-colors cursor-pointer;
+  }
+  .side-row:hover {
+    background: #f1f2f4;
+  }
 }
 
 /* Visible keyboard focus for all interactive controls (accessibility). */
@@ -33,7 +78,14 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 4px;
+}
+
+/* Softer default form controls to match the lighter surface language. */
+input,
+select,
+textarea {
+  background: var(--panel);
 }
