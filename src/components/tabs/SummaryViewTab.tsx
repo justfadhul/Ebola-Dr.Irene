@@ -14,19 +14,17 @@ import { summaryMetrics } from '@/lib/selectors';
 import { daysBetween } from '@/lib/scoring';
 import type { FacilitySummary, TimeAxis, TrendCategory } from '@/lib/types';
 
-const TODAY = '2024-09-30'; // demo "viewing date" aligned to the test data window
-
 export function SummaryViewTab() {
   const t = useT();
   const rootRef = useRef<HTMLDivElement>(null);
-  const { filtered, summaries } = useDerived();
+  const { filtered, summaries, referenceDate } = useDerived();
   const timeAxis = useStore((s) => s.timeAxis);
   const setTimeAxis = useStore((s) => s.setTimeAxis);
   const [trend, setTrend] = useState<'all' | TrendCategory>('all');
 
   const m = useMemo(
-    () => summaryMetrics(summaries, filtered, TODAY),
-    [summaries, filtered],
+    () => summaryMetrics(summaries, filtered, referenceDate),
+    [summaries, filtered, referenceDate],
   );
 
   const shown = trend === 'all' ? summaries : summaries.filter((s) => s.trend === trend);

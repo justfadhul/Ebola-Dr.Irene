@@ -73,6 +73,9 @@ const en: Dict = {
     'KoboToolbox API fetch (server URL, asset UID, token) — planned. Use CSV upload or test data for now.',
   weeksBuffer: '± weeks buffer:',
   outbreakDomainsHelp: 'Domains included in Outbreak Response analysis.',
+  facilitiesFilter: 'Facilities (uncheck to exclude)',
+  searchPlaceholder: 'Search…',
+  reset: 'reset',
   // Outbreak Response
   subReadiness: 'Latest total score per facility. Lowest (highest priority) on top.',
   subDomainScores: 'One row per facility, one column per domain. Cells colored by score thresholds.',
@@ -184,6 +187,9 @@ const fr: Dict = {
     "Récupération via API KoboToolbox (URL du serveur, UID, jeton) — à venir. Utilisez l'import CSV ou les données test pour l'instant.",
   weeksBuffer: '± semaines tampon :',
   outbreakDomainsHelp: "Domaines inclus dans l'analyse Réponse à l'épidémie.",
+  facilitiesFilter: 'Établissements (décocher pour exclure)',
+  searchPlaceholder: 'Rechercher…',
+  reset: 'réinitialiser',
   // Outbreak Response
   subReadiness: 'Dernier score total par établissement. Le plus bas (priorité la plus élevée) en haut.',
   subDomainScores:
@@ -297,6 +303,9 @@ const es: Dict = {
     'Descarga por API de KoboToolbox (URL del servidor, UID, token): próximamente. Use la carga CSV o los datos de prueba por ahora.',
   weeksBuffer: '± semanas de margen:',
   outbreakDomainsHelp: 'Dominios incluidos en el análisis de Respuesta al brote.',
+  facilitiesFilter: 'Establecimientos (desmarque para excluir)',
+  searchPlaceholder: 'Buscar…',
+  reset: 'restablecer',
   // Outbreak Response
   subReadiness: 'Última puntuación total por establecimiento. La más baja (mayor prioridad) arriba.',
   subDomainScores:

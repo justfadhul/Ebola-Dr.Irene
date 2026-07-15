@@ -203,6 +203,12 @@ function distinct<T>(arr: T[]): T[] {
 function ViewControlsSection() {
   const t = useT();
   const { data, filters, setFilters } = useStore();
+  const [facilitySearch, setFacilitySearch] = useState('');
+
+  const inGeo = (d: { province: string; district: string; subdistrict: string }) =>
+    (!filters.provinces.length || filters.provinces.includes(d.province)) &&
+    (!filters.districts.length || filters.districts.includes(d.district)) &&
+    (!filters.subdistricts.length || filters.subdistricts.includes(d.subdistrict));
 
   const provinces = useMemo(() => distinct(data.map((d) => d.province)).sort(), [data]);
   const districts = useMemo(
@@ -214,10 +220,48 @@ function ViewControlsSection() {
       ).sort(),
     [data, filters.provinces],
   );
+  const subdistricts = useMemo(
+    () =>
+      distinct(
+        data
+          .filter(
+            (d) =>
+              (!filters.provinces.length || filters.provinces.includes(d.province)) &&
+              (!filters.districts.length || filters.districts.includes(d.district)),
+          )
+          .map((d) => d.subdistrict),
+      ).sort(),
+    [data, filters.provinces, filters.districts],
+  );
 
-  const toggleIn = (key: 'provinces' | 'districts' | 'facilityLevels', v: string) => {
+  // One entry per facility (respecting the geography filters above), for the
+  // exclude list. Checked = included; unchecking adds the id to excludedFacilityIds.
+  const facilities = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const d of data) if (inGeo(d) && !seen.has(d.facilityId)) seen.set(d.facilityId, d.facilityName);
+    return Array.from(seen, ([id, name]) => ({ id, name })).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, filters.provinces, filters.districts, filters.subdistricts]);
+
+  const shownFacilities = facilities.filter((f) =>
+    f.name.toLowerCase().includes(facilitySearch.toLowerCase()),
+  );
+
+  const toggleIn = (
+    key: 'provinces' | 'districts' | 'subdistricts' | 'facilityLevels',
+    v: string,
+  ) => {
     const cur = filters[key];
     setFilters({ [key]: cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v] } as never);
+  };
+
+  const toggleFacility = (id: string) => {
+    const cur = filters.excludedFacilityIds;
+    setFilters({
+      excludedFacilityIds: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id],
+    });
   };
 
   return (
@@ -264,6 +308,24 @@ function ViewControlsSection() {
         </div>
       </fieldset>
 
+      {subdistricts.length > 0 && (
+        <fieldset>
+          <legend className="text-xs font-medium text-slate-600 mb-1">{t('subdistrict')}</legend>
+          <div className="space-y-1 max-h-32 overflow-y-auto">
+            {subdistricts.map((p) => (
+              <label key={p} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={filters.subdistricts.includes(p)}
+                  onChange={() => toggleIn('subdistricts', p)}
+                />
+                {p}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
       <fieldset>
         <legend className="text-xs font-medium text-slate-600 mb-1">{t('facilityLevel')}</legend>
         <div className="flex gap-3">
@@ -275,6 +337,40 @@ function ViewControlsSection() {
                 onChange={() => toggleIn('facilityLevels', lv)}
               />
               {lv}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend className="text-xs font-medium text-slate-600 mb-1">
+          {t('facilitiesFilter')}
+          {filters.excludedFacilityIds.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilters({ excludedFacilityIds: [] })}
+              className="ml-2 text-slate-400 hover:text-slate-600 underline"
+            >
+              {t('reset')}
+            </button>
+          )}
+        </legend>
+        <input
+          type="search"
+          value={facilitySearch}
+          onChange={(e) => setFacilitySearch(e.target.value)}
+          placeholder={t('searchPlaceholder')}
+          className="mb-1 w-full border border-slate-300 rounded px-2 py-1 text-xs"
+        />
+        <div className="space-y-1 max-h-40 overflow-y-auto">
+          {shownFacilities.map((f) => (
+            <label key={f.id} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={!filters.excludedFacilityIds.includes(f.id)}
+                onChange={() => toggleFacility(f.id)}
+              />
+              <span className="truncate">{f.name}</span>
             </label>
           ))}
         </div>
