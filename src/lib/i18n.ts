@@ -76,6 +76,7 @@ const en: Dict = {
   facilitiesFilter: 'Facilities (uncheck to exclude)',
   searchPlaceholder: 'Search…',
   reset: 'reset',
+  scoreLegend: 'Scoring key',
   // Outbreak Response
   subReadiness: 'Latest total score per facility. Lowest (highest priority) on top.',
   subDomainScores: 'One row per facility, one column per domain. Cells colored by score thresholds.',
@@ -190,6 +191,7 @@ const fr: Dict = {
   facilitiesFilter: 'Établissements (décocher pour exclure)',
   searchPlaceholder: 'Rechercher…',
   reset: 'réinitialiser',
+  scoreLegend: 'Légende des scores',
   // Outbreak Response
   subReadiness: 'Dernier score total par établissement. Le plus bas (priorité la plus élevée) en haut.',
   subDomainScores:
@@ -306,6 +308,7 @@ const es: Dict = {
   facilitiesFilter: 'Establecimientos (desmarque para excluir)',
   searchPlaceholder: 'Buscar…',
   reset: 'restablecer',
+  scoreLegend: 'Clave de puntuación',
   // Outbreak Response
   subReadiness: 'Última puntuación total por establecimiento. La más baja (mayor prioridad) arriba.',
   subDomainScores:

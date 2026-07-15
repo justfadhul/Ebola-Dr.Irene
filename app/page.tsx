@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
+import { ScoreLegend } from '@/components/ScoreLegend';
 import { OutbreakResponseTab } from '@/components/tabs/OutbreakResponseTab';
 import { SummaryViewTab } from '@/components/tabs/SummaryViewTab';
 import { FacilityDeepDiveTab } from '@/components/tabs/FacilityDeepDiveTab';
@@ -48,10 +49,12 @@ export default function Home() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <nav className="flex gap-1 overflow-x-auto">
+          <nav className="flex gap-1 overflow-x-auto" role="tablist" aria-label={t('appTitle')}>
             {tabs.map(([id, icon, label]) => (
               <button
                 key={id}
+                role="tab"
+                aria-selected={activeTab === id}
                 onClick={() => setActiveTab(id)}
                 className={`px-3 sm:px-4 py-3 text-sm font-medium border-b-2 -mb-px whitespace-nowrap ${
                   activeTab === id
@@ -59,7 +62,7 @@ export default function Home() {
                     : 'border-transparent text-slate-500 hover:text-slate-700'
                 }`}
               >
-                {icon} {label}
+                <span aria-hidden="true">{icon}</span> {label}
               </button>
             ))}
           </nav>
@@ -68,15 +71,20 @@ export default function Home() {
         <div className="p-3 sm:p-4">
           {!dataLoaded ? (
             <div className="card p-10 text-center text-slate-500 max-w-xl mx-auto mt-10">
-              <div className="text-4xl mb-3">📂</div>
+              <div className="text-4xl mb-3" aria-hidden="true">📂</div>
               <p>{t('noData')}</p>
             </div>
-          ) : activeTab === 'response' ? (
-            <OutbreakResponseTab />
-          ) : activeTab === 'summary' ? (
-            <SummaryViewTab />
           ) : (
-            <FacilityDeepDiveTab />
+            <div className="space-y-4">
+              <ScoreLegend />
+              {activeTab === 'response' ? (
+                <OutbreakResponseTab />
+              ) : activeTab === 'summary' ? (
+                <SummaryViewTab />
+              ) : (
+                <FacilityDeepDiveTab />
+              )}
+            </div>
           )}
         </div>
       </main>
